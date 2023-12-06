@@ -18,7 +18,7 @@
 
 <iostmt> ::= "zai" <factor> | "nyi" <IDENTIFIER>
 
-<structstmt> ::= <ifstmt> | <whilestmt>
+<structstmt> ::= <ifestmt> | <whilestmt>
 
 <ifestmt> ::= <ifstmt> | <ifstmt> <elsestmt>
 
