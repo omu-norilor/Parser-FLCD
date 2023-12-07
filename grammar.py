@@ -11,7 +11,7 @@ class Grammar():
 
     def readGrammar(self):
         # TODO: need to change grammar in bnf and redo part of this function
-        # read from file and populate nonTerminals, terminals, productions, productionsCG
+        # read from file and populate nonTerminals, terminals, productions
         # read from file filename row by row
         # for each row, split it into lhs and rhs
         # add lhs to nonTerminals cleaning it up (remove <> for bnf)
@@ -31,24 +31,23 @@ class Grammar():
             splitLine = line.split("::=", 2)
             lhs = splitLine[0].strip()
             rhs = splitLine[1].strip()
-            rhsSymbols = rhs.split("\\|")
+            rhsSymbols = rhs.split("|")
             # split even further by spaces
             rhsSymbolsList = list()
             for rhsSymbol in rhsSymbols: 
                 rhsSymbolSplit = rhsSymbol.strip().split(" ") 
                 rhsSymbolList = list()
                 for rhs in rhsSymbolSplit: 
-                    if rhs.startswith("<") and rhs.endswith(">") and not rhs =="<>":
-                        rhs = rhs[1:-1]
-                    if rhs.startswith('"') and rhs.endswith('"') and not rhs =='""':
-                        rhs = rhs[1:-1]
+                    # if rhs.startswith("<") and rhs.endswith(">") and not rhs =="<>":
+                    #     rhs = rhs[1:-1]
+                    # if rhs.startswith('"') and rhs.endswith('"') and not rhs =='""':
+                    #     rhs = rhs[1:-1]
                     rhsSymbolList.append(rhs)
                 rhsSymbolsList.append(rhsSymbolList)
             
 
             # add lhs, rhs to productions (lhs is key, rhs is value)
             # add lhs, rhs to productionsCG only if lhs is a list (lhs is key, rhs is value)
-            #TODO: todoododo
             lhsSplit = lhs.split(" ")
             if len(lhsSplit) > 1: 
                 self.isCFG = False
@@ -59,7 +58,6 @@ class Grammar():
                 if lhs not in self.nonTerminals: 
                     self.nonTerminals.append(lhs)
                 
-            
             # for each symbol in rhs, add it to terminals or nonTerminals
             for rhsList in rhsSymbolsList: 
                 for rhsSymbol in rhsList:
@@ -69,7 +67,10 @@ class Grammar():
                         rhsSymbolClean = rhsSymbolClean[1:-1]
                         if rhsSymbolClean not in self.nonTerminals:
                             self.nonTerminals.append(rhsSymbolClean)
-                        elif rhsSymbolClean not in self.terminals:
+                    
+                    if rhsSymbolClean.startswith('"') and rhsSymbolClean.endswith('"') and not rhsSymbolClean =='""':
+                        rhsSymbolClean = rhsSymbolClean[1:-1]
+                        if rhsSymbolClean not in self.terminals:
                             self.terminals.append(rhsSymbolClean)
 
     def printNonTerminals(self):
@@ -88,17 +89,16 @@ class Grammar():
 
             for production in productions: 
                 for symbol in production: 
-                    stringo += symbol + " "
-                stringo += " | "
-                
-            print(stringo[:-3])
+                    stringo = stringo + symbol[1:-1] + " | "
+                stringo=stringo[:-3]
+            print(stringo)
         
-    def printProductionsNonTerminal(self, nonTerminal): 
+    def printProductionsNonTerminal(self, nonTerminal):
         stringo = nonTerminal + " -> "
         for production in self.productions[nonTerminal]: 
-            for symbol in production: 
-                stringo += symbol + " "
-            stringo += " | "
-            
-        print(stringo[:-3])
+                for symbol in production: 
+                    stringo = stringo + symbol[1:-1] + " | "
+                stringo=stringo[:-3]
+                
+        print(stringo)
 
