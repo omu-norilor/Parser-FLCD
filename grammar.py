@@ -37,11 +37,7 @@ class Grammar():
             for rhsSymbol in rhsSymbols: 
                 rhsSymbolSplit = rhsSymbol.strip().split(" ") 
                 rhsSymbolList = list()
-                for rhs in rhsSymbolSplit: 
-                    # if rhs.startswith("<") and rhs.endswith(">") and not rhs =="<>":
-                    #     rhs = rhs[1:-1]
-                    # if rhs.startswith('"') and rhs.endswith('"') and not rhs =='""':
-                    #     rhs = rhs[1:-1]
+                for rhs in rhsSymbolSplit:
                     rhsSymbolList.append(rhs)
                 rhsSymbolsList.append(rhsSymbolList)
             
