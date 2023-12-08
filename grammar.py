@@ -10,15 +10,6 @@ class Grammar():
     
 
     def readGrammar(self):
-        # TODO: need to change grammar in bnf and redo part of this function
-        # read from file and populate nonTerminals, terminals, productions
-        # read from file filename row by row
-        # for each row, split it into lhs and rhs
-        # add lhs to nonTerminals cleaning it up (remove <> for bnf)
-        # add lhs, rhs to productions (lhs is key, rhs is value)
-        # add lhs, rhs to productionsCG (lhs is key, rhs is value) only if lhs is a list
-        # for each symbol in rhs, if it has <> around it, add it to nonTerminals(bnf)
-
         with open(self.filename, "r") as f:
             lines = f.readlines()
             
@@ -44,7 +35,7 @@ class Grammar():
 
             # add lhs, rhs to productions (lhs is key, rhs is value)
             # add lhs, rhs to productionsCG only if lhs is a list (lhs is key, rhs is value)
-            lhsSplit = lhs.split(" ")
+            lhsSplit = lhs.split(" ") # TODO also check if rhs 
             if len(lhsSplit) > 1: 
                 self.isCFG = False
             else:
