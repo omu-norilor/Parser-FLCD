@@ -1,6 +1,7 @@
 import re
 class Grammar():
     def __init__(self,filename):
+        self.startingSymbol = ""
         self.filename = filename
         self.nonTerminals = list()
         self.terminals = list()
@@ -8,7 +9,18 @@ class Grammar():
         self.isCFG=True
         self.readGrammar()
     
-
+    def getNonTerminals(self):
+        return self.nonTerminals
+    
+    def getTerminals(self):
+        return self.terminals
+    
+    def getProductions(self):
+        return self.productions
+    
+    def getGrammarSymbols(self):
+        return self.nonTerminals + self.terminals
+    
     def readGrammar(self):
         with open(self.filename, "r") as f:
             lines = f.readlines()
@@ -29,6 +41,14 @@ class Grammar():
                 rhsSymbolSplit = rhsSymbol.strip().split(" ") 
                 rhsSymbolList = list()
                 for rhs in rhsSymbolSplit:
+                    if rhs.startswith("<") and rhs.endswith(">") and not rhs =="<>":
+                        rhs = rhs[1:-1]
+                        if rhs not in self.nonTerminals:
+                            self.nonTerminals.append(rhs)
+                    if rhs.startswith('"') and rhs.endswith('"') and not rhs =='""':
+                        rhs = rhs[1:-1]
+                        if rhs not in self.terminals:
+                            self.terminals.append(rhs)
                     rhsSymbolList.append(rhs)
                 rhsSymbolsList.append(rhsSymbolList)
             
@@ -41,6 +61,8 @@ class Grammar():
             else:
                 if lhs.startswith("<") and lhs.endswith(">") and not lhs =="<>":
                     lhs = lhs[1:-1]
+                if self.startingSymbol == "":
+                    self.startingSymbol = lhs
                 self.productions[lhs]=rhsSymbolsList
                 if lhs not in self.nonTerminals: 
                     self.nonTerminals.append(lhs)
@@ -76,16 +98,24 @@ class Grammar():
 
             for production in productions: 
                 for symbol in production: 
-                    stringo = stringo + symbol[1:-1] + " | "
-                stringo=stringo[:-3]
+                    if symbol in self.nonTerminals: 
+                        symbol = "<" + symbol + ">"
+                    elif symbol in self.terminals:
+                        symbol = '"' + symbol + '"'
+                    stringo = stringo + " " + symbol 
+                stringo = stringo + " | "
+            stringo=stringo[:-3]
             print(stringo)
         
     def printProductionsNonTerminal(self, nonTerminal):
         stringo = nonTerminal + " -> "
         for production in self.productions[nonTerminal]: 
-                for symbol in production: 
-                    stringo = stringo + symbol[1:-1] + " | "
-                stringo=stringo[:-3]
-                
+            for symbol in production: 
+                if symbol in self.nonTerminals: 
+                    symbol = "<" + symbol + ">"
+                elif symbol in self.terminals:
+                    symbol = '"' + symbol + '"'
+                stringo = stringo + " " + symbol
+            stringo = stringo + " | "
+        stringo=stringo[:-3]        
         print(stringo)
-

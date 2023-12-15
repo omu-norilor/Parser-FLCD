@@ -31,3 +31,7 @@
 <condition> ::= <expression> <RELATION> <expression>
 
 <RELATION> ::= "sub" | "sub_sau" | "la_fel" | "nu_i" | "peste" | "peste_sau"
+
+<IDENTIFIER> ::= "salut" | "nush1" | "nush2" | "nush3"
+
+<NUMBER> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" 
