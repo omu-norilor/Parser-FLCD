@@ -1,6 +1,7 @@
 from grammar import Grammar
 from LR0_item import LRitem
 from LR0_parser import LR0
+from State import State
 import random
 def GrammarPrints(grammar):
     print("\nGrammar from file: ", grammar.filename)
@@ -53,6 +54,60 @@ def testParser():
         states = lr0.canonicalCollection(grammar)
         lr0.printStates(states)
 
+        assert len(states) == 9
+
+        correctStates= list()
+        # s0:
+        # (S'->[].['S'])
+        # (S->[].['A', 'a'])
+        # (A->[].['a', 'A'])
+        # (A->[].['b', 'A'])
+        # (A->[].['c'])
+        correctStates.append(State([LRitem("S'", list(), ['S']), LRitem("S", list(), ['A', 'a']), LRitem("A", list(), ['a', 'A']), LRitem("A", list(), ['b', 'A']), LRitem("A", list(), ['c'])]))
+
+        # s1:
+        # (S'->['S'].[])
+        correctStates.append(State([LRitem("S'", ['S'], list())]))
+
+        # s2:
+        # (S->['A'].['a'])
+        correctStates.append(State([LRitem("S", ['A'], ['a'])]))
+
+        # s3:
+        # (A->['a'].['A'])
+        # (A->[].['a', 'A'])
+        # (A->[].['b', 'A'])
+        # (A->[].['c'])
+        correctStates.append(State([LRitem("A", ['a'], ['A']), LRitem("A", list(), ['a', 'A']), LRitem("A", list(), ['b', 'A']), LRitem("A", list(), ['c'])]))
+
+        # s4:
+        # (A->['b'].['A'])
+        # (A->[].['a', 'A'])
+        # (A->[].['b', 'A'])
+        # (A->[].['c'])
+        correctStates.append(State([LRitem("A", ['b'], ['A']), LRitem("A", list(), ['a', 'A']), LRitem("A", list(), ['b', 'A']), LRitem("A", list(), ['c'])]))
+
+        # s5:
+        # (A->['c'].[])
+        correctStates.append(State([LRitem("A", ['c'], list())]))
+
+        # s6:
+        # (S->['A', 'a'].[])
+        correctStates.append(State([LRitem("S", ['A', 'a'], list())]))
+
+        # s7:
+        # (A->['a', 'A'].[])
+        correctStates.append(State([LRitem("A", ['a', 'A'], list())]))
+
+        # s8:
+        # (A->['b', 'A'].[])
+        correctStates.append(State([LRitem("A", ['b', 'A'], list())]))
+        
+        assert states == correctStates
+
+
+
+
     if choice == "2":
         filename = "rules\\g2.txt" # Syntax.in from GitHub 1b
         grammar = Grammar(filename)
@@ -65,4 +120,3 @@ def testParser():
 
 if __name__ == "__main__":
     testParser()
-    # testGrammar()

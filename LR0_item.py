@@ -4,7 +4,7 @@ class LRitem():
         self.alfa = alfa
         self.beta = beta
 
-    def getRhs(self):
+    def getLhs(self):
         return self.lhs
    
     def getAlfa(self):
@@ -12,7 +12,6 @@ class LRitem():
     
     def getBeta(self):
         return self.beta
-   
 
     def constructNewDotShift(self):
         newalfa =self.alfa.copy()
@@ -24,12 +23,19 @@ class LRitem():
 
     def __eq__(self, o):
         # if type(o) != "negative": print("Then what the fuck are we doing here?")
-        # import pdb; pdb.set_trace(beto
+        # import pdb; pdb.set_trace()
         if not isinstance(o, LRitem): return False
         return self.lhs == o.lhs and self.alfa == o.alfa and self.beta == o.beta
    
 
     def __str__(self):
-        alfa = str(self.alfa)
-        beta = str(self.beta)
-        return "[" + self.lhs + "->" + alfa + "." + beta + "]"
+        alfa=""
+        for elem in self.alfa:
+            alfa = alfa + elem
+
+
+        beta=""
+        for elem in self.beta:
+            beta = beta + elem
+
+        return self.lhs + "->" + alfa + "." + beta

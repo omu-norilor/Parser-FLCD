@@ -19,9 +19,10 @@ class LR0():
         states = list()
         statesCopy=list()
         # s0 = closure({[S'->.S]})
+
+        # build s0 "manually" 
         s0 =State(list())
         Sprime = enhancedGrammar.startingSymbol
-        # import pdb; pdb.set_trace()
         Sproductions = enhancedGrammar.getProductions().get(Sprime)
         
         for production in Sproductions:
@@ -48,6 +49,10 @@ class LR0():
         return states
 
     def printStates(self, states):
+        i = 0
         for s in states: 
-            print(s)
-        
+            stringo = "s"+str(i)+": "
+            for item in s.getItems():
+                stringo += str(item) + ", "
+            print(stringo[:-2])
+            i+=1

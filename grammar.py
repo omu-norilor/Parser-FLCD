@@ -55,7 +55,7 @@ class Grammar():
 
             # add lhs, rhs to productions (lhs is key, rhs is value)
             # add lhs, rhs to productionsCG only if lhs is a list (lhs is key, rhs is value)
-            lhsSplit = lhs.split(" ") # TODO also check if rhs 
+            lhsSplit = lhs.split(" ") 
             if len(lhsSplit) > 1: 
                 self.isCFG = False
             else:

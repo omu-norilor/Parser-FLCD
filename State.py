@@ -13,7 +13,7 @@ class State ():
     def setItems(self, items): 
         self.items = items
 
-    def closure(self, I,enhancedGrammar):
+    def closure(self, I, enhancedGrammar):
         C = I.copy()
         C1 = C.copy()
         added = True
@@ -28,9 +28,6 @@ class State ():
                 B = item.getBeta()[0]
                 if B in enhancedGrammar.getNonTerminals(): 
                     # for B->y in P do
-                    if B not in enhancedGrammar.getProductions():
-                        import pdb; pdb.set_trace()
-
                     for rhs in enhancedGrammar.getProductions().get(B): 
                         # if B->.y not in C then
                         newItem = LRitem(B, list(), rhs)
@@ -44,7 +41,6 @@ class State ():
         return C
 
     def __eq__(self, o): 
-        # import pdb; pdb.set_trace() 
         if not isinstance(o, State): return False
         return self.items == o.items
     
