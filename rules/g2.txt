@@ -1,37 +1,25 @@
-<program> ::= <cmpdstmt>
+<S'> ::= <program>
 
-<cmpdstmt> ::= "dyi" <stmtlist> "hoo"
+<program> ::= <stmt>
 
-<stmtlist> ::= <stmt> | <stmt> <stmtlist>
+<stmt> ::= <assignstmt> <ifestmt>
 
-<stmt> ::= <simplstmt> | <structstmt>
+<assignstmt> ::= <IDENTIFIER> "ii" <NUMBER>
 
-<simplstmt> ::= <assignstmt> | <iostmt>
+<expression> ::= <IDENTIFIER> | <NUMBER>
 
-<assignstmt> ::= <IDENTIFIER> "ii" <expression>
+<iostmt> ::= "zai" <NUMBER>
 
-<expression> ::= <term> | <expression> "cu" <term> | <expression> "far" <term>
+<ifestmt> ::= <ifstmt> <elsestmt>
 
-<term> ::=  <factor> | <term> "ori" <factor> | <term> "impartit" <factor>
+<ifstmt> ::= "de" <condition> "atunci" <iostmt>
 
-<factor> ::= "deci" <expression> "atat" | <IDENTIFIER> | <NUMBER>
-
-<iostmt> ::= "zai" <factor> | "nyi" <IDENTIFIER>
-
-<structstmt> ::= <ifestmt> | <whilestmt>
-
-<ifestmt> ::= <ifstmt> | <ifstmt> <elsestmt>
-
-<ifstmt> ::= "de" <condition> "atunci" <stmt>
-
-<elsestmt> ::= "altminteri" <stmt>
-
-<whilestmt> ::= "pana" <condition> "dyi" <stmt> "hoo"
+<elsestmt> ::= "altminteri" <iostmt>
 
 <condition> ::= <expression> <RELATION> <expression>
 
 <RELATION> ::= "sub" | "sub_sau" | "la_fel" | "nu_i" | "peste" | "peste_sau"
 
-<IDENTIFIER> ::= "salut" | "nush1" | "nush2" | "nush3"
+<IDENTIFIER> ::= "salut" | "nush1" | "nush2" | "nush3" | "ID"
 
-<NUMBER> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" 
+<NUMBER> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "const" 

@@ -1,6 +1,8 @@
 from grammar import Grammar
 from LR0_item import LRitem
 from LR0_parser import LR0
+from LR0_canonical_collection import CanonicalCollection
+from LR0_table import LRTable
 from State import State
 import random
 def GrammarPrints(grammar):
@@ -37,7 +39,7 @@ def testGrammar():
     
     print("That's all folks!")
 
-def testParser():
+def testCannonicalCollection():
     # read choices from user
     choice = input("Enter \n- 1 for g1.txt, \n- 2 for g2.txt: ")
     annoyance= ["You're annoying me. ", "You're really annoying me. ", "You're really really annoying me. ", "Please stop. ", "I'm going to stop responding if you don't stop. ", "You wanted it"]
@@ -50,11 +52,11 @@ def testParser():
     if choice == "1":
         filename = "rules\\g1.txt" # Syntax.in from course
         grammar = Grammar(filename)
-        lr0 = LR0(grammar)
-        states = lr0.canonicalCollection(grammar)
-        lr0.printStates(states)
+        canonical = CanonicalCollection(grammar)
+        states = canonical.states
+        canonical.printStates(states)
 
-        assert len(states) == 9
+        # assert len(states) == 9
 
         correctStates= list()
         # s0:
@@ -103,10 +105,9 @@ def testParser():
         # (A->['b', 'A'].[])
         correctStates.append(State([LRitem("A", ['b', 'A'], list())]))
         
-        assert states == correctStates
-
-
-
+        # Changed g1, so this is no longer correct
+        # assert states == correctStates
+        # print(states)
 
     if choice == "2":
         filename = "rules\\g2.txt" # Syntax.in from GitHub 1b
@@ -117,6 +118,30 @@ def testParser():
     
     print("That's all folks!")
 
+def readFirstWord(filename):
+    word_list = []
+    with open(filename, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            word_list.append(line.split()[0])
+    return word_list
+
+def pulamea():
+    # filename = "rules\\g1.txt" # Syntax.in from course
+    # source = "rules\\seq.txt"
+    filename = "rules\\g2.txt" # Syntax.in from GitHub 1b
+    source = "rules\\pif.out"
+    grammar = Grammar(filename)
+    canonical = CanonicalCollection(grammar)
+    table = LRTable(canonical)
+    parser = LR0(table)
+    inputList = readFirstWord(source)
+    print(inputList)
+    parseResult = parser.parse(inputList)
+    print(parseResult)
+
 
 if __name__ == "__main__":
-    testParser()
+    # testGrammar()
+    # testCannonicalCollection()
+    pulamea()

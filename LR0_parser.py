@@ -2,57 +2,67 @@ from LR0_item import LRitem
 from State import State
 class LR0():
     
-    def __init__(self, enhancedGrammar):
-        self.enhancedGrammar = enhancedGrammar
-    
-    def goTo(self, s, symbol):
-        result = list()
-        for item in s.getItems(): 
-            if len(item.getBeta())==0: 
-                continue
+    def __init__(self, lrTable):
+        # self.enhancedGrammar = enhancedGrammar
+        self.InputStack = list()
+        self.WorkingStack = list()
+        self.OutputStack = list()
+        self.table= lrTable
 
-            if (item.getBeta()[0]==symbol):
-                result.append(item.constructNewDotShift())
-        return s.closure(result, self.enhancedGrammar)
+    def shift(self):
+        state = self.WorkingStack[-1][1]
+        tableEntry = self.table[state]
 
-    def canonicalCollection(self, enhancedGrammar):
-        states = list()
-        statesCopy=list()
-        # s0 = closure({[S'->.S]})
-
-        # build s0 "manually" 
-        s0 =State(list())
-        Sprime = enhancedGrammar.startingSymbol
-        Sproductions = enhancedGrammar.getProductions().get(Sprime)
+        topOfInputStack = self.InputStack[-1]
         
-        for production in Sproductions:
-            s0.addItem(LRitem(Sprime, list(), production))
-        s0.setItems(s0.closure(s0.getItems(), enhancedGrammar))
-        states.append(s0)
-        # for each state s in states
-        changed = True
-        while changed:
-            changed = False
-            statesCopy = states.copy()
-            for s in states:
-                # for each grammar symbol X
-                for X in enhancedGrammar.getGrammarSymbols():
-                    # if goto(s, X) is not empty and not in states
-                    gotoResult = self.goTo(s, X)
-                    if len(gotoResult)!=0 and State(gotoResult) not in statesCopy:
-                        # add goto(s, X) to states
-                        newState = State(gotoResult)
-                        statesCopy.append(newState)
-                        changed = True
-                    
-            states = statesCopy.copy()
-        return states
+        self.InputStack.pop()
+        gotoResult = tableEntry.targetStates[topOfInputStack]
 
-    def printStates(self, states):
-        i = 0
-        for s in states: 
-            stringo = "s"+str(i)+": "
-            for item in s.getItems():
-                stringo += str(item) + ", "
-            print(stringo[:-2])
-            i+=1
+        if gotoResult == None:
+            return False
+        
+        self.WorkingStack.append([topOfInputStack,gotoResult])
+        return True
+
+    def reduce(self):
+        state = self.WorkingStack[-1][1]
+        tableEntry = self.table[state]
+        reductionIndex = tableEntry.reductionIndex
+        production = self.table.enhancedGrammar.indexedProductions[reductionIndex]
+        rhsProductions = list()
+
+        for i in range(len(self.WorkingStack)-1,0,-1):
+            rhsProductions.insert(0,self.WorkingStack[i][0])
+            
+            if rhsProductions == production[1]:
+                mMinusP = self.WorkingStack[i-1][1]
+                gotoResult = self.table[mMinusP].targetStates[production[0]]
+                self.WorkingStack = self.WorkingStack[:i]
+                self.WorkingStack.append([production[0],gotoResult])
+                self.OutputStack.insert(0,reductionIndex)
+                return True
+                   
+        return False
+
+
+    def parse(self, inputList):
+        self.WorkingStack.append(["$", self.table.startingState])
+        inputList.reverse()
+        self.InputStack = inputList
+        self.OutputStack = list()
+        while True:
+            state =self.WorkingStack[-1][1]
+            if self.table[state].actionType == "SHIFT":
+                if not self.shift():
+                    print("Parsing Horror... sorry, Error")
+                    return False
+            elif self.table[state].actionType == "REDUCE":
+                if not self.reduce():
+                    print("Parsing Horror... sorry, Error")
+                    return False
+            elif self.table[state].actionType == "ACCEPT":
+                return self.OutputStack
+            else:
+                print("Parsing Horror... sorry, Error")
+                return False
+            

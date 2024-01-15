@@ -20,10 +20,12 @@ class LRitem():
         newbeta.pop(0)
         return LRitem(self.lhs, newalfa, newbeta)
    
+    def __hash__(self):
+        # Generate a hash based on the concatenation of hashes of lhs, alfa, and beta
+        return hash((self.lhs, tuple(self.alfa), tuple(self.beta)))
 
     def __eq__(self, o):
         # if type(o) != "negative": print("Then what the fuck are we doing here?")
-        # import pdb; pdb.set_trace()
         if not isinstance(o, LRitem): return False
         return self.lhs == o.lhs and self.alfa == o.alfa and self.beta == o.beta
    

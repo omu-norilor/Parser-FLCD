@@ -6,8 +6,12 @@ class Grammar():
         self.nonTerminals = list()
         self.terminals = list()
         self.productions = dict() # A -> B C | D E | F G as A: [[B, C], [D, E], [F, G]]
+        self.indexedProductions = dict()
         self.isCFG=True
+        self.index= 1
+        self.startingSymbol= ""
         self.readGrammar()
+        
     
     def getNonTerminals(self):
         return self.nonTerminals
@@ -21,6 +25,17 @@ class Grammar():
     def getGrammarSymbols(self):
         return self.nonTerminals + self.terminals
     
+    def getProductionsNonterminal(self, nonTerminal):
+        return self.productions[nonTerminal]
+    
+    def getProductionIndex(self, lhs, rhs):
+        for key in self.indexedProductions.keys():
+            if self.indexedProductions[key][0]==lhs and self.indexedProductions[key][1]==rhs:
+                return key
+    
+    def getProductionByIndex(self, index):
+        return self.indexedProductions[index]
+            
     def readGrammar(self):
         with open(self.filename, "r") as f:
             lines = f.readlines()
@@ -67,21 +82,26 @@ class Grammar():
                 if lhs not in self.nonTerminals: 
                     self.nonTerminals.append(lhs)
                 
-            # for each symbol in rhs, add it to terminals or nonTerminals
-            for rhsList in rhsSymbolsList: 
-                for rhsSymbol in rhsList:
-                    # remove leading and trailing whitespace and "" for ebnf / <> for bnf
-                    rhsSymbolClean = rhsSymbol.strip()
-                    if rhsSymbolClean.startswith("<") and rhsSymbolClean.endswith(">") and not rhsSymbolClean =="<>":
-                        rhsSymbolClean = rhsSymbolClean[1:-1]
-                        if rhsSymbolClean not in self.nonTerminals:
-                            self.nonTerminals.append(rhsSymbolClean)
-                    
-                    if rhsSymbolClean.startswith('"') and rhsSymbolClean.endswith('"') and not rhsSymbolClean =='""':
-                        rhsSymbolClean = rhsSymbolClean[1:-1]
-                        if rhsSymbolClean not in self.terminals:
-                            self.terminals.append(rhsSymbolClean)
+                # for each symbol in rhs, add it to terminals or nonTerminals
+                for rhsList in rhsSymbolsList: 
+                    if lhs != self.startingSymbol:
+                        self.indexedProductions[self.index] = [lhs, rhsList]
+                        self.index+=1
 
+                    for rhsSymbol in rhsList:
+                        # remove leading and trailing whitespace and "" for ebnf / <> for bnf
+                        rhsSymbolClean = rhsSymbol.strip()
+                        if rhsSymbolClean.startswith("<") and rhsSymbolClean.endswith(">") and not rhsSymbolClean =="<>":
+                            rhsSymbolClean = rhsSymbolClean[1:-1]
+                            if rhsSymbolClean not in self.nonTerminals:
+                                self.nonTerminals.append(rhsSymbolClean)
+                        
+                        if rhsSymbolClean.startswith('"') and rhsSymbolClean.endswith('"') and not rhsSymbolClean =='""':
+                            rhsSymbolClean = rhsSymbolClean[1:-1]
+                            if rhsSymbolClean not in self.terminals:
+                                self.terminals.append(rhsSymbolClean)
+
+               
     def printNonTerminals(self):
         for nonTerminal in self.nonTerminals:
             print(nonTerminal)
@@ -106,7 +126,7 @@ class Grammar():
                 stringo = stringo + " | "
             stringo=stringo[:-3]
             print(stringo)
-        
+    
     def printProductionsNonTerminal(self, nonTerminal):
         stringo = nonTerminal + " -> "
         for production in self.productions[nonTerminal]: 

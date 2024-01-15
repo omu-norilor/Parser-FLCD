@@ -1,7 +1,7 @@
 from grammar import Grammar
 from LR0_item import LRitem
 class State (): 
-    def __init__(self, items): 
+    def __init__(self, items):
         self.items = items
 
     def getItems(self): 
@@ -44,8 +44,12 @@ class State ():
         if not isinstance(o, State): return False
         return self.items == o.items
     
+    def __hash__(self):
+        # Generate a hash based on the concatenation of hashes of item tuples
+        return hash(tuple(map(hash, self.items)))
+
     def __str__(self): 
         string=""
         for item in self.items: 
-            string += str(item) + "\n"
+            string += str(item) + " , "
         return string
