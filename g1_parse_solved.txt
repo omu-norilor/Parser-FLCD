@@ -1,0 +1,46 @@
+grammmar
+
+<S'> ::= <S>
+<S> ::= "a" <A>
+<A> ::= "b" <A> | "c"
+
+cannonical collection
+
+s0: S'->.S, S->.aA
+s1: S'->S.
+s2: S->a.A, A->.bA, A->.c
+s3: S->aA.
+s4: A->b.A, A->.bA, A->.c
+s5: A->c.
+s6: A->bA.
+
+
+table
+
+state | action   | S  | A  | a  | b  | c
+s0    | shift    | s1 |    | s2 |    |
+s1    | accept   |    |    |    |    |
+s2    | shift    |    | s3 |    | s4 | s5
+s3    | reduce 1 |    |    |    |    |
+s4    | shift    |    | s6 |    | s4 | s5
+s5    | reduce 3 |    |    |    |    |
+s6    | reduce 2 |    |    |    |    |
+
+parse
+
+work stack      |     input stack      |   output stack
+
+$S0             | abbc$                | -
+$S0aS2          |  bbc$                | -
+$S0aS2bS4        |   bc$                | -
+$S0aS2bS4bS4     |    c$                | -
+$S0aS2bS4bS4cS5  |     $                | -
+$S0aS2bS4bS4AS6  |     $                | 3    # reduce 3 from S5
+$S0aS2bS4AS6     |     $                | 23   # reduce 2 from S6
+$S0aS2AS3        |     $                | 223  # reduce 2 from S6
+$S0S1            |     $                | 1223 # reduce 1 from S3
+
+output
+
+1223
+

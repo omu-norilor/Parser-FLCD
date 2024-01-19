@@ -126,14 +126,20 @@ def readFirstWord(filename):
             word_list.append(line.split()[0])
     return word_list
 
-def pulamea():
-    # filename = "rules\\g1.txt" # Syntax.in from course
-    # source = "rules\\seq.txt"
-    filename = "rules\\g2.txt" # Syntax.in from GitHub 1b
-    source = "rules\\pif.out"
+def testParser():
+    filename = "rules\\g1.txt" # Syntax.in from course
+    source = "rules\\seq.txt"
+    # filename = "rules\\g2.txt" # Syntax.in from GitHub 1b
+    # source = "rules\\pif.out"
     grammar = Grammar(filename)
     canonical = CanonicalCollection(grammar)
+
+    CanonicalCollection.printStates(canonical, canonical.states)
     table = LRTable(canonical)
+    #print table elements
+    for key in table.table.keys():
+        print(key, table.table[key])
+
     parser = LR0(table)
     inputList = readFirstWord(source)
     print(inputList)
@@ -144,4 +150,4 @@ def pulamea():
 if __name__ == "__main__":
     # testGrammar()
     # testCannonicalCollection()
-    pulamea()
+    testParser()
