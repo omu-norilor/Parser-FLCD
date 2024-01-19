@@ -7,11 +7,12 @@ class LRTableEntry():
         self.reductionIndex = reductionIndex
 
     def __str__(self):
-        # targetStates = ""
-        # for key in self.targetStates.keys():
-        #     targetStates += str(key) + " " + str(self.targetStates[key]) + "\n"
-
         return str(self.targetStates) + " " + self.actionType + " " + str(self.reductionIndex)
+
+
+# table entry = (target states, action type, reduction index)
+# table entry in table = (state, table entry)
+
 class LRTable():
     def __init__(self,  canonicalCollection):
         self.table=dict()
@@ -51,21 +52,19 @@ class LRTable():
             if len(lRitem.beta)!=0:
                 action = "SHIFT"
             
-            elif lRitem.lhs== canonicalCollection.enhancedGrammar.startingSymbol and len(lRitem.beta)==0 and len(state.getItems()) == 1:
+            elif lRitem.lhs == canonicalCollection.enhancedGrammar.startingSymbol and len(lRitem.beta)==0 and len(state.getItems()) == 1:
                 action = "ACCEPT"
             
-            elif len(state.getItems()) == 1:
+            elif len(state.getItems()) == 1 and len(lRitem.beta)==0:
                 action = "REDUCE"
                 reductionIndex = canonicalCollection.enhancedGrammar.getProductionIndex(lRitem.lhs, lRitem.alfa)
             
-            else:
+            else: #if not shift or accept or reduce, then it is an error (DUUH)
                 action = "ERROR"
                 nrOfErrors+=1
             
 
-            lrTableEntry = LRTableEntry(canonicalCollection.stateTransitions.get(state),
-                    action,
-                    reductionIndex)
+            lrTableEntry = LRTableEntry(canonicalCollection.stateTransitions.get(state), action, reductionIndex)
             self.table[state] = lrTableEntry
         
         print("Number of conflicts:" + str(nrOfErrors))
